@@ -37,6 +37,8 @@ func (n *Network) eventLoop(eventQueue *base.EventQueue, clock tick.Clock, lifet
 		t := p.Time()
 		if t.After(now) {
 			now = clock()
+			runtime.Gosched()
+			time.Sleep(1 * time.Millisecond)
 			continue
 		}
 		events := p.Action()(t)
@@ -44,6 +46,8 @@ func (n *Network) eventLoop(eventQueue *base.EventQueue, clock tick.Clock, lifet
 		for _, event := range events {
 			eventQueue.Enqueue(event)
 		}
+		runtime.Gosched()
+		time.Sleep(1 * time.Millisecond)
 	}
 	println("network main loop end at", now.String())
 }
